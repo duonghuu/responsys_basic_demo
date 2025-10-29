@@ -1,7 +1,7 @@
 
 import { redis } from "./fakeRedis.js";
 import { responsysQueue } from "./fakeQueue.js";
-
+let myQueue = [];
 async function activityStreamHandler(lastId) {
     let startId = lastId;
 
@@ -15,11 +15,11 @@ async function activityStreamHandler(lastId) {
     //   }
     // }
 
-    //console.log('activityStreamHandler', lastId);
+    // console.log('activityStreamHandler', lastId);
 
-    const results = await redis.xrange("activity-stream", startId ? startId : "-", "+", "COUNT", 200);
+    const results = await redis.xrange("activity-stream", startId ? startId : "-", "+", "COUNT", 1);
 
-    //console.log('activityStreamHandler', lastId, results.length);
+    // console.log('activityStreamHandler', lastId, results.length);
 
     if (results.length > 0) {
 
@@ -64,12 +64,16 @@ async function activityStreamHandler(lastId) {
                 if ((arrQueue.length >= 100) || (i === activity.length - 1)) {
 
                     //send to queue
-                    responsysQueue.add({
+                    // responsysQueue.add({
+                    //     type: 'ADD_ACTIVITY_ARRAY',
+                    //     activity: key,
+                    //     data: arrQueue
+                    // });
+                    myQueue.push({
                         type: 'ADD_ACTIVITY_ARRAY',
                         activity: key,
                         data: arrQueue
-                    });
-
+                    })
                     //reset queue
                     arrQueue = [];
                 }
@@ -77,10 +81,10 @@ async function activityStreamHandler(lastId) {
         }
         //}
     }
+    // setTimeout(function () {
 
-    setTimeout(function () {
-        activityStreamHandler(lastId);
-    }, 25000);
+    //     activityStreamHandler(lastId);
+    // }, 5000);
 }
 
 activityStreamHandler();
