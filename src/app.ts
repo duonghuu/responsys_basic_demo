@@ -35,6 +35,13 @@ app.post('/rest/api/v1.3/folders/Banking/suppData/Activity_:activityName/members
     res.json({ activityName, data });
 });
 
+app.post('/rest/api/v1.3/events/:eventName', (req: Request, res: Response) => {
+    const { eventName } = req.params;
+    const data = req.body;
+    console.log('eventName_', data);
+    res.json({ eventName, data });
+});
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
