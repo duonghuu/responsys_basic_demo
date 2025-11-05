@@ -1,10 +1,10 @@
 services:
-  app_demo:
+  app:
     container_name: express_demo
+    network_mode: host
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["node", "-r", "tsconfig-paths/register", "dist/app.js"]
     ports:
       - "6000:6000"
     env_file:
